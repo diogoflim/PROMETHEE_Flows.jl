@@ -4,7 +4,7 @@ export Flows_fn
 using LinearAlgebra, DataFrames
 
 function Flows_fn(Decision_Matrix::Matrix, q_thresholds::Vector, p_thresholds::Vector, 
-                    scurve_thresholds::Vector, weights::Vector, pref_fn::Vector; alternative_names::Vector)
+                    scurve_thresholds::Vector, weights::Vector, pref_fn::Vector; alternative_names=nothing)
     #=
     This function returns the flows of PROMETHEE I and PROMETHEE II
 
@@ -23,11 +23,14 @@ function Flows_fn(Decision_Matrix::Matrix, q_thresholds::Vector, p_thresholds::V
         pos_flows: m-dimensional vector of positive flows
         neg_flows: m-dimensional vector of negative flows
     =#
-    
+        
     m, n = size(Decision_Matrix) #m is the number of alternatives, n is the number of criteria
+    if  isnothing(alternative_names)
+        alternative_names = ["a" * string(i) for i in 1:m]
+    end
+
     D = zeros(m,m,n) # 3-dimensional array that will receive n matrices (mxm) of pairwise differences 
     P = zeros(m,m,n) # 3-dimensional array that will receive n matrices (mxm) of preference functions according with the given p_thresholds
-    
     for j in 1:n
         for u in 1:m
             for v in 1:m
@@ -61,8 +64,28 @@ function Flows_fn(Decision_Matrix::Matrix, q_thresholds::Vector, p_thresholds::V
     #Aggregated_P = DataFrames(Aggregated_P)
     pos_flows = [sum(Aggregated_P[i,:]) / (m-1) for i in 1:m] # Vector of positive flows
     neg_flows = [sum(Aggregated_P[:,j]) / (m-1) for j in 1:m] # Vector of negative flows
-    net_flows = pos_flows - neg_flows
+    
+    #=
+    P1_Matrix = Array(m,m)
+    for i in 1:m
+        for j in 1:m
+        if ((pos_flows[i]>pos_flows[j] && neg_flows[i]<neg_flows[j]) || 
+            (pos_flows[i]==pos_flows[j] && neg_flows[i]<neg_flows[j])||
+            (pos_flows[i]>pos_flows[j] && neg_flows[i]==neg_flows[j]))
+            P1_Matrix[i,j]="P"
+        end
+        if pos_flows[i]==pos_flows[j] && neg_flows[i]==neg_flows[j]
+            P1_Matrix[i,j]="I"
+        end
+        if ((pos_flows[i]>pos_flows[j] && neg_flows[i]>neg_flows[j]) || 
+            (pos_flows[i]<pos_flows[j] && neg_flows[i]<neg_flows[j]))
+            P1_Matrix[i,j]="R"
+        end
+    end
+    =#
 
+    net_flows = pos_flows - neg_flows
+    
     flows = DataFrame(Alternative = alternative_names,
                         Positive_flows = pos_flows,
                         Negative_flows = neg_flows,
