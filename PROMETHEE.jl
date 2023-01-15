@@ -3,18 +3,19 @@ module PROMETHEE_mod
 export Flows_fn
 using LinearAlgebra, DataFrames
 
-function Flows_fn(Decision_Matrix, q_thresholds, p_thresholds, scurve_thresholds, weights, pref_fn, alternative_names)
+function Flows_fn(Decision_Matrix::Matrix, q_thresholds::Vector, p_thresholds::Vector, 
+                    scurve_thresholds::Vector, weights::Vector, pref_fn::Vector; alternative_names::Vector)
     #=
     This function returns the flows of PROMETHEE I and PROMETHEE II
 
     inputs: 
-        Decision_Matrix - array of size=(m,n) with the performances of $m$ alternatives regarding $n$ criteria.
+        Decision_Matrix - matrix of size=(m,n) with the performances of $m$ alternatives regarding $n$ criteria.
         q_thresholds - a n-dimensional vector receiving indifference thresholds for the criteria
         p_thresholds - a n-dimensional vector receiving preference thresholds for the criteria
         scurve_thresholds- a n-dimensional vector receiving the scurve thresholds to be used in case the Gaussian function is chosen
         weights: a n-dimensional vector receiving weights for the criteria
-        pref_function: a n-dimensional vector receiving as input values between 1 and 5 indicating the preference function for each criterion 
-        alternative_names - vector with the name of the alternatives
+        pref_function: a n-dimensional vector receiving as input integers between 1 and 6 that indicate the preference function for each criterion 
+        alternative_names - vector of strings receiving the name of the alternatives
 
     possible outputs:
         results: DataFrame with net, positive and negative flows for each alternative

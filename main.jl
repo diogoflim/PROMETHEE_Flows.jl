@@ -13,8 +13,8 @@ function main()
     s = [0 for i in 1:12]
     w = [1/12 for i in 1:12]
     pref = [5 for i in 1:12]
-    flows = PROMETHEE_mod.Flows_fn(X,q,p,s,w,pref, alternative_names)
+    flows = PROMETHEE_mod.Flows_fn(X,q,p,s,w,pref; alternative_names)
     sort!(flows, :Net_flows, rev=true)
     return flows
 end
-main()
+println(main())
