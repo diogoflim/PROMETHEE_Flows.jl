@@ -1,9 +1,9 @@
 # PROMETHEE_Julia
  
-This repository includes the implementation of a function that generates the PROMETHEE I and PROMETHEE II flows (positive, negative, and net flows) using Julia Language.
+This repository includes the implementation of a function that generates the positive, negative, and net flows from PROMETHEE I and PROMETHEE II using the Julia Programming Language.
 
 - The function named Flows_fn is organized in the PROMETHEE_mod module in the PROMETHEE.jl file and an example is provided.
-- The main.jl file can be used to prepare the inputs and call PROMETHEE_fn.
+- The main.jl file can be used to prepare the inputs and call PROMETHEE_fn (as in the example).
 
 Inputs:
 1. Decision_Matrix - array of size=(m,n) with the performances of $m$ alternatives regarding $n$ criteria.

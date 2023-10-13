@@ -26,7 +26,7 @@ function Flows_fn(Decision_Matrix::Matrix, q_thresholds::Vector, p_thresholds::V
         
     m, n = size(Decision_Matrix) #m is the number of alternatives, n is the number of criteria
     if  isnothing(alternative_names)
-        alternative_names = ["a" * string(i) for i in 1:m]
+        alternative_names = ["a_" * string(i) for i in 1:m]
     end
 
     D = zeros(m,m,n) # 3-dimensional array that will receive n matrices (mxm) of pairwise differences 
@@ -65,32 +65,15 @@ function Flows_fn(Decision_Matrix::Matrix, q_thresholds::Vector, p_thresholds::V
     pos_flows = [sum(Aggregated_P[i,:]) / (m-1) for i in 1:m] # Vector of positive flows
     neg_flows = [sum(Aggregated_P[:,j]) / (m-1) for j in 1:m] # Vector of negative flows
     
-    #=
-    P1_Matrix = Array(m,m)
-    for i in 1:m
-        for j in 1:m
-        if ((pos_flows[i]>pos_flows[j] && neg_flows[i]<neg_flows[j]) || 
-            (pos_flows[i]==pos_flows[j] && neg_flows[i]<neg_flows[j])||
-            (pos_flows[i]>pos_flows[j] && neg_flows[i]==neg_flows[j]))
-            P1_Matrix[i,j]="P"
-        end
-        if pos_flows[i]==pos_flows[j] && neg_flows[i]==neg_flows[j]
-            P1_Matrix[i,j]="I"
-        end
-        if ((pos_flows[i]>pos_flows[j] && neg_flows[i]>neg_flows[j]) || 
-            (pos_flows[i]<pos_flows[j] && neg_flows[i]<neg_flows[j]))
-            P1_Matrix[i,j]="R"
-        end
-    end
-    =#
-
     net_flows = pos_flows - neg_flows
-    
-    flows = DataFrame(Alternative = alternative_names,
+
+    flows_df = DataFrame(Alternative = alternative_names,
                         Positive_flows = pos_flows,
                         Negative_flows = neg_flows,
                         Net_flows = net_flows)
-    return flows
+    
+
+    return flows_df, pos_flows, neg_flows, net_flows
 
 end # end function PROMETHEE
 end # end module
